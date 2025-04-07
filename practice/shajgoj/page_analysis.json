@@ -1,0 +1,47 @@
+{
+  "title": "Shajgoj – Buy Authentic Cosmetic and Beauty Products Online in Bangladesh",
+  "potentialContainers": [
+    {
+      "selector": "ul.top-0.py-3",
+      "childCount": 111,
+      "childType": "LI",
+      "hasImages": false,
+      "hasPrices": false,
+      "hasLinks": true
+    },
+    {
+      "selector": "ul.top-0.py-3",
+      "childCount": 101,
+      "childType": "LI",
+      "hasImages": false,
+      "hasPrices": false,
+      "hasLinks": true
+    },
+    {
+      "selector": "ul.top-0.py-3",
+      "childCount": 87,
+      "childType": "LI",
+      "hasImages": false,
+      "hasPrices": false,
+      "hasLinks": true
+    },
+    {
+      "selector": "ul.top-0.py-3",
+      "childCount": 84,
+      "childType": "LI",
+      "hasImages": false,
+      "hasPrices": false,
+      "hasLinks": true
+    },
+    {
+      "selector": "ul.top-0.py-3",
+      "childCount": 72,
+      "childType": "LI",
+      "hasImages": false,
+      "hasPrices": false,
+      "hasLinks": true
+    }
+  ],
+  "allLinkCount": 2004,
+  "allImageCount": 63
+}
