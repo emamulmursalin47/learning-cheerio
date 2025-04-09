@@ -1,0 +1,144 @@
+{
+  "projectOverview": {
+    "website": "Airbnb clone",
+    "purpose": "Accommodation booking platform",
+    "keyFeatures": [
+      "Property listings",
+      "Search with filters",
+      "Property details with photos and amenities",
+      "Booking system with calendar",
+      "User reviews and ratings",
+      "User accounts",
+      "Host management",
+      "Interactive maps"
+    ]
+  },
+  "frontend": {
+    "suggestedTechStack": {
+      "framework": "React",
+      "stateManagement": "Redux or Context API",
+      "styling": "Styled Components or Tailwind CSS",
+      "uiComponents": "Custom component library",
+      "responsiveApproach": "Desktop-first with mobile adaptations",
+      "keyLibraries": [
+        "react-dates or react-calendar for date selection",
+        "react-map-gl or Mapbox for maps integration",
+        "react-query for data fetching",
+        "next-i18next for internationalization"
+      ]
+    },
+    "keyComponents": [
+      "NavBar",
+      "SearchBar",
+      "PropertyCard",
+      "FilterBar",
+      "ImageCarousel",
+      "Calendar",
+      "ReviewsDisplay",
+      "Map",
+      "Modal"
+    ],
+    "pageStructure": []
+  },
+  "backend": {
+    "suggestedTechStack": {
+      "language": "Node.js with Express or Next.js API routes",
+      "database": "MongoDB for flexibility or PostgreSQL with PostGIS for location data",
+      "orm": "Mongoose (MongoDB) or Prisma (SQL)",
+      "apis": "RESTful API or GraphQL with Apollo Server",
+      "authentication": "JWT with refresh tokens",
+      "storage": "AWS S3 for images",
+      "caching": "Redis for sessions and caching",
+      "search": "Elasticsearch for advanced property search",
+      "deployment": "Docker containers on AWS or Vercel for Next.js"
+    },
+    "dataModels": [
+      {
+        "name": "User",
+        "fields": [
+          "id",
+          "name",
+          "email",
+          "password",
+          "avatar",
+          "createdAt",
+          "isHost",
+          "verifications"
+        ]
+      },
+      {
+        "name": "Property",
+        "fields": [
+          "id",
+          "hostId",
+          "title",
+          "description",
+          "location",
+          "coordinates",
+          "propertyType",
+          "roomType",
+          "capacity",
+          "bedrooms",
+          "beds",
+          "bathrooms",
+          "amenities",
+          "photos",
+          "price",
+          "currency",
+          "minimumStay",
+          "maximumStay",
+          "cancellationPolicy",
+          "rating",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      {
+        "name": "Booking",
+        "fields": [
+          "id",
+          "propertyId",
+          "userId",
+          "checkIn",
+          "checkOut",
+          "guests",
+          "price",
+          "serviceFee",
+          "totalPrice",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      {
+        "name": "Review",
+        "fields": [
+          "id",
+          "propertyId",
+          "userId",
+          "rating",
+          "comment",
+          "cleanliness",
+          "accuracy",
+          "communication",
+          "location",
+          "checkIn",
+          "value",
+          "createdAt"
+        ]
+      }
+    ],
+    "apiEndpoints": []
+  },
+  "deployment": {
+    "hosting": "Vercel for Next.js or AWS Elastic Beanstalk",
+    "ciCd": "GitHub Actions or CircleCI",
+    "monitoring": "Sentry for frontend, Datadog for backend",
+    "analytics": "Google Analytics or Mixpanel"
+  },
+  "seo": {
+    "strategy": "Dynamic meta tags for listings, Static generation for core pages",
+    "sitemap": "Automatically generated sitemap.xml",
+    "structuredData": "Schema.org markup for listings, reviews, and events"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "frontend": {
+    "pages": {},
+    "commonComponents": {},
+    "styles": {},
+    "responsiveDesign": false,
+    "accessibility": {},
+    "seo": {}
+  },
+  "backend": {
+    "apiEndpoints": [],
+    "dataStructures": {},
+    "userFlows": {
+      "search": false,
+      "filters": false,
+      "userAccounts": false,
+      "booking": false,
+      "reviews": false
+    },
+    "sitemapStructure": {}
+  },
+  "technologies": {
+    "detected": {
+      "backend": {
+        "hasGraphQL": false,
+        "hasRestAPI": false,
+        "possibleLanguage": "Node.js/Express or Ruby on Rails (common for travel platforms)"
+      }
+    },
+    "suggested": {}
+  }
+}

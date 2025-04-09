@@ -4,60 +4,39 @@ const fs = require('fs');
 const { stringify } = require('csv-stringify');
 
 // Configuration
-const BASE_URL = 'https://skyshopbd24.com';
-const DELAY_BETWEEN_PAGES = 2000; // 2 seconds
-const MAX_RETRIES = 3;
-const OUTPUT_FILE = 'all_product_names.csv';
+const BASE_URL = 'https://shop.shajgoj.com';
+const DELAY_MS = 3000; // 3-second delay between pages
+const MAX_PAGES = 10; // Safety limit
+const OUTPUT_FILE = 'shajgoj_products.csv';
 
-async function scrapeAllProductNames() {
+async function scrapeShajgojProducts() {
   let page = 1;
-  let hasMorePages = true;
+  let hasMore = true;
   const allProducts = [];
-  const scrapedUrls = new Set(); // To avoid duplicates
 
-  while (hasMorePages) {
+  while (hasMore && page <= MAX_PAGES) {
     console.log(`Scraping page ${page}...`);
     
     try {
       const url = page === 1 ? BASE_URL : `${BASE_URL}/page/${page}`;
-      const { products, hasNextPage } = await scrapePageWithRetry(url);
+      const { products, hasNextPage } = await scrapePage(url);
       
-      // Filter out duplicates
-      const newProducts = products.filter(p => !scrapedUrls.has(p.url));
-      newProducts.forEach(p => scrapedUrls.add(p.url));
-      
-      allProducts.push(...newProducts);
-      hasMorePages = hasNextPage && newProducts.length > 0;
+      allProducts.push(...products);
+      hasMore = hasNextPage;
       page++;
 
-      if (hasMorePages) {
-        await delay(DELAY_BETWEEN_PAGES);
-      }
+      if (hasMore) await delay(DELAY_MS);
     } catch (error) {
-      console.error(`Failed to scrape page ${page}:`, error.message);
-      hasMorePages = false; // Stop on persistent errors
+      console.error(`Error on page ${page}:`, error.message);
+      hasMore = false;
     }
   }
 
-  // Save to CSV
-  await saveToCsv(allProducts);
-  console.log(`✅ Success! Saved ${allProducts.length} products to ${OUTPUT_FILE}`);
+  await saveAsCsv(allProducts);
+  console.log(`✅ Saved ${allProducts.length} products to ${OUTPUT_FILE}`);
 }
 
-async function scrapePageWithRetry(url, retryCount = 0) {
-  try {
-    return await scrapeSinglePage(url);
-  } catch (error) {
-    if (retryCount < MAX_RETRIES) {
-      console.log(`Retrying (${retryCount + 1}/${MAX_RETRIES})...`);
-      await delay(DELAY_BETWEEN_PAGES * (retryCount + 1));
-      return scrapePageWithRetry(url, retryCount + 1);
-    }
-    throw error;
-  }
-}
-
-async function scrapeSinglePage(url) {
+async function scrapePage(url) {
   const { data } = await axios.get(url, {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
@@ -69,38 +48,49 @@ async function scrapeSinglePage(url) {
   const $ = cheerio.load(data);
   const products = [];
 
-  // Extract product names and URLs
-  $('.product-card').each((i, element) => {
-    const $card = $(element);
-    const name = $card.find('[data-name]').attr('data-name')?.trim() || 
-                 $card.find('.product-card__name a').text()?.trim();
-    const url = $card.find('.product-card__name a').attr('href');
+  // Product list container
+  const productList = $('#main > main > div > div.container.mx-auto > div > div.w-full.md\\:w-\\[75\\%\\].mt-4 > div:nth-child(3) > div:nth-child(2) > div > ul');
 
-    if (name && url) {
+  $(productList).find('li').each((i, element) => {
+    const $product = $(element);
+    
+    // Using your exact selectors with fallbacks
+    const name = $product.find('div > a > div.px-\\[15px\\].pt-\\[16px\\].md\\:px-\\[1\\.75em\\].md\\:py-\\[1\\.5625em\\].w-\\[60\\%\\].md\\:w-full > p.text-gray-700').text().trim();
+    const price = $product.find('div > a > div.px-\\[15px\\].pt-\\[16px\\].md\\:px-\\[1\\.75em\\].md\\:py-\\[1\\.5625em\\].w-\\[60\\%\\].md\\:w-full > div.flex.justify-start.md\\:justify-center.space-x-3').text().trim();
+    const url = $product.find('div > a').attr('href');
+
+    if (name) {
       products.push({
-        id: $card.attr('data-id') || `no-id-${i}`,
         name,
-        url: new URL(url, BASE_URL).href, // Ensure absolute URL
-        page: url.includes('/page/') ? parseInt(url.split('/page/')[1]) : 1
+        price: cleanPrice(price),
+        url: url ? new URL(url, BASE_URL).href : null,
+        page
       });
     }
   });
 
   // Check for next page
-  const hasNextPage = $('a[rel="next"], .pagination__next').length > 0;
+  const hasNextPage = $('a.next.page-numbers').length > 0;
 
   return { products, hasNextPage };
 }
 
-function saveToCsv(data) {
+function cleanPrice(priceText) {
+  return priceText
+    .replace(/\s+/g, ' ')
+    .replace(/[^\d,.৳]/g, '')
+    .trim();
+}
+
+function saveAsCsv(data) {
   return new Promise((resolve, reject) => {
     stringify(data, {
       header: true,
       columns: [
-        { key: 'id', header: 'ID' },
         { key: 'name', header: 'Product Name' },
+        { key: 'price', header: 'Price' },
         { key: 'url', header: 'Product URL' },
-        { key: 'page', header: 'Page Found' }
+        { key: 'page', header: 'Page Number' }
       ]
     }, (err, output) => {
       if (err) return reject(err);
@@ -115,4 +105,4 @@ function delay(ms) {
 }
 
 // Start scraping
-scrapeAllProductNames().catch(console.error);
+scrapeShajgojProducts().catch(console.error);
